@@ -1,5 +1,4 @@
 # ans_teleport
-
 Teleport node を複数の VM / Docker ホストに対して配布し、既存の Teleport Cluster に join させるための Ansible Playbook です。
 
 ## できること
@@ -15,7 +14,6 @@ Teleport node を複数の VM / Docker ホストに対して配布し、既存�
 - VM は Debian/Ubuntu または RHEL系を想定
 - Docker ホスト側は Docker Engine が動作していること（Playbookは best-effort で `docker` パッケージ導入も試みます）
 
-> 注意: join token は秘密情報です。`group_vars/all.yml` をそのままコミットしない運用（Ansible Vault等）を推奨します。
 
 ## 使い方
 
@@ -72,6 +70,3 @@ ansible-playbook playbooks/teleport_nodes.yml
   - token が node 用か（`roles: [node]` 相当）
   - `teleport_ca_pins` を設定している場合は pin が正しいか
 
-## ライセンス
-
-必要なら追記してください。
