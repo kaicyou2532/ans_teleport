@@ -1,0 +1,12 @@
+---
+- name: Install and join Teleport nodes (VM)
+  hosts: teleport_vm
+  become: true
+  roles:
+    - teleport_node_vm
+
+- name: Run and join Teleport nodes (Docker)
+  hosts: teleport_docker
+  become: true
+  roles:
+    - teleport_node_docker

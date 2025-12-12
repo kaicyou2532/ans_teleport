@@ -1,0 +1,52 @@
+---
+- name: Validate join token provided
+  ansible.builtin.assert:
+    that:
+      - teleport_join_method == 'token'
+      - teleport_join_token is defined
+      - teleport_join_token | length > 0
+    fail_msg: "teleport_join_token が未設定です。group_vars/all.yml で設定するか Ansible Vault を使ってください。"
+
+- name: Ensure config dir exists
+  ansible.builtin.file:
+    path: "{{ teleport_docker_config_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Ensure data dir exists
+  ansible.builtin.file:
+    path: "{{ teleport_docker_data_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Render teleport config
+  ansible.builtin.template:
+    src: teleport.yaml.j2
+    dest: "{{ teleport_docker_config_dir }}/teleport.yaml"
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Ensure docker is installed (best-effort)
+  ansible.builtin.package:
+    name: docker
+    state: present
+  ignore_errors: true
+
+- name: Run teleport node container
+  community.docker.docker_container:
+    name: "{{ teleport_docker_container_name }}"
+    image: "{{ teleport_docker_image }}"
+    state: started
+    restart_policy: unless-stopped
+    volumes:
+      - "{{ teleport_docker_config_dir }}/teleport.yaml:/etc/teleport.yaml:ro"
+      - "{{ teleport_docker_data_dir }}:{{ teleport_docker_data_dir }}"
+    command: >-
+      teleport start
+      --config=/etc/teleport.yaml
+      --join-token={{ teleport_join_token | quote }}

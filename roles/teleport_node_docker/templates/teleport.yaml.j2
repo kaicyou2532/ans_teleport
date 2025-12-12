@@ -1,0 +1,30 @@
+version: v3
+teleport:
+  data_dir: {{ teleport_docker_data_dir }}
+  proxy_server: {{ teleport_proxy_addr | to_json }}
+  {% if teleport_ca_pins is defined and teleport_ca_pins|length > 0 %}
+  ca_pins:
+  {% for pin in teleport_ca_pins %}
+    - {{ pin | to_json }}
+  {% endfor %}
+  {% endif %}
+  log:
+    output: stderr
+    severity: INFO
+
+auth_service:
+  enabled: "no"
+
+proxy_service:
+  enabled: "no"
+
+ssh_service:
+  enabled: {{ 'yes' if 'ssh' in teleport_services else 'no' | to_json }}
+  labels:
+{% if teleport_node_labels is defined and teleport_node_labels|length > 0 %}
+{% for k, v in teleport_node_labels.items() %}
+    {{ k }}: {{ v | to_json }}
+{% endfor %}
+{% else %}
+    managed_by: "ansible"
+{% endif %}

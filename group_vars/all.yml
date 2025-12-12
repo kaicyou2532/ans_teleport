@@ -1,0 +1,33 @@
+# Teleport Proxy/Cluster to join
+teleport_proxy_addr: "proxy.example.com:443"
+
+# Join method:
+# - token: static join token (simple)
+# - iam / azure / gcp 等もあるがこのPlaybookはtoken方式を基本にする
+teleport_join_method: "token"
+
+# Required when teleport_join_method == "token"
+# 取り扱い注意: 本番では Ansible Vault や外部Secretを推奨
+teleport_join_token: "CHANGEME"
+
+# Optional but recommended: CA pin(s) for secure first connect
+# Example: ["sha256:..."]
+teleport_ca_pins: []
+
+# Node labels
+teleport_node_labels:
+  env: dev
+  managed_by: ansible
+
+# Which services to enable on nodes
+teleport_services:
+  - ssh
+
+# Teleport major version to install (package repo)
+teleport_version: "17"
+
+# Docker options (for teleport_docker group)
+teleport_docker_image: "public.ecr.aws/gravitational/teleport:17"
+teleport_docker_container_name: "teleport-node"
+teleport_docker_config_dir: "/etc/teleport"
+teleport_docker_data_dir: "/var/lib/teleport"

@@ -1,0 +1,13 @@
+---
+teleport_proxy_addr: "proxy.example.com:443"
+teleport_join_method: "token"
+teleport_join_token: "CHANGEME"
+teleport_ca_pins: []
+teleport_node_labels: {}
+teleport_services:
+  - ssh
+
+teleport_docker_image: "public.ecr.aws/gravitational/teleport:17"
+teleport_docker_container_name: "teleport-node"
+teleport_docker_config_dir: "/etc/teleport"
+teleport_docker_data_dir: "/var/lib/teleport"
